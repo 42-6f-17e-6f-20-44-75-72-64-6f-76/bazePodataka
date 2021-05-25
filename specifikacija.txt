@@ -1,0 +1,29 @@
+Zašto koristimo ID kod svega umjesto imena?
+-	Jer jednog dana kada budemo mijenjali ime možemo imati problema
+-	Jer za pohranu ID treba manje prostora, kod stranih ključeva, efikasniji rad BP
+-	Povezivanja će obavljati softver, a njemu je svejedno ID ili naziv, dok kod ručnog unosa je preglednije
+-	ID se sam generira i tako se čuva integritet primarnog ključa
+-	…
+
+RELACIJA Jelo
+    id //IDENTIFIKATOR JELA
+    naziv //NAZIV JELA 
+    cijena //CIJENA KOJU PLAĆA MUŠTERIJA KAD NARUČUJE TO JELO
+
+RELACIJA namirnice
+    id 			//IDENTIFIKATOR NAMIRNICE
+    naziv 			//NAZIV NAMIRNICE
+    raspoloziva_kolicina //PREOSTALA KOLICINA U  KILOGRAMIMA ILI LITRAMA AKO SE RADI O TEKUĆINI
+    datum_isteka_roka_trajanja
+    nabavna_cijena//CIJENA PO KOJOJ JE KUPLJEN PROIZVOD PO KILOGRAMU ILI LITRI
+
+RELACIJA meni
+    naziv //NAZIV MENIJA, JEDAN MENI SE SASTOJI OD VIŠE SLIJEDOVA JELA
+
+
+RELACIJA racun
+    datum //DATUM IZDAVANJA RAČUNA
+
+
+
+
