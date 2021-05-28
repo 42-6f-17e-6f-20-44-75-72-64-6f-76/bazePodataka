@@ -14,7 +14,7 @@ CREATE DATABASE Restoran;
 
 CREATE TABLE Jelo (
     id                  SERIAL PRIMARY KEY,
-    naziv               CHARACTER VARYING(30) NOT NULL,
+    naziv               CHARACTER VARYING(30) NOT NULL UNIQUE,
     cijena              REAL NOT NULL
 );
 
@@ -25,8 +25,8 @@ CREATE TABLE Racun (
 
 CREATE TABLE Namirnice (
     id                  SERIAL PRIMARY KEY,
-    naziv               CHARACTER VARYING(30) NOT NULL,
-    raspoloziva_kol     BIGINT,
+    naziv               CHARACTER VARYING(30) NOT NULL UNIQUE,
+    raspoloziva_kol     REAL,
     rok_trajanja        DATE,
     nabavna_cijena      REAL
 );
@@ -34,19 +34,19 @@ CREATE TABLE Namirnice (
 
 CREATE TABLE DnevniMeni (
     id                  SERIAL PRIMARY KEY,
-    datum               DATE NOT NULL
+    datum               DATE NOT NULL UNIQUE
 );
 
 CREATE TABLE Meni (
     id                  SERIAL PRIMARY KEY,
-    naziv               CHARACTER VARYING(30) NOT NULL
+    naziv               CHARACTER VARYING(30) NOT NULL UNIQUE
 );
 
 
 CREATE TABLE JeloRacun (
     id_jelo             BIGINT references Jelo(id),
     id_racun            BIGINT references Racun(id),
-    kolicina            INTEGER NOT NULL DEFAULT 1,
+    kolicina            REAL NOT NULL DEFAULT 1,
     PRIMARY KEY         (id_jelo, id_racun)
 );
 
@@ -54,14 +54,14 @@ CREATE TABLE JeloRacun (
 CREATE TABLE JeloNamirnice (
     id_jelo             BIGINT references Jelo(id),
     id_namirnice        BIGINT references Namirnice(id),
-    kolicina            INTEGER NOT NULL DEFAULT 1,
+    kolicina            REAL NOT NULL DEFAULT 1,
     PRIMARY KEY         (id_jelo, id_namirnice)
 );
 
 CREATE TABLE JeloDnevniMeni (
     id_jelo             BIGINT references Jelo(id),
     id_dnevnimeni       BIGINT references DnevniMeni(id),
-    broj_porcija        INTEGER NOT NULL DEFAULT 1,
+    broj_porcija        INTEGER UNSIGNED NOT NULL DEFAULT 1,
     PRIMARY KEY         (id_jelo, id_dnevnimeni)
 );
 
@@ -70,8 +70,6 @@ CREATE TABLE JeloMeni (
     id_meni             BIGINT references Meni(id),
     PRIMARY KEY         (id_jelo, id_meni)
 );
-
-
 
 
 
@@ -96,7 +94,6 @@ VALUES
 ('Kapula', 0.8, '2022-01-03'::date, 15);
 
 
-
 INSERT INTO jelo(naziv,cijena)
 VALUES 
 ('Pizza', 60),
@@ -116,23 +113,12 @@ VALUES
 (1, 11, 80);
 
 
-
-/*ispisi sve namirnice potrebne za pojedino jelo*/
-
-SELECT * FROM jelo
-JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
-JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
-WHERE jelo.naziv = 'Pizza';
-
-
-
-
 INSERT INTO meni(naziv)
 VALUES 
-('Rapsodija'),
-('Mesna plata'),
-('Vege'),
-('Slatko popodne');
+('Juhe'),
+('Deserti'),
+('Meso'),
+('Salate');
 
 
 
@@ -150,5 +136,33 @@ VALUES
 ('2021-10-10'::date);
 
 
+/*ispisi sve namirnice potrebne za pojedino jelo*/
+
+SELECT namirnice.naziv, namirnice.raspoloziva_kol FROM jelo
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+WHERE jelo.naziv = 'Pizza';
 
 
+/*popis svih namirnica kojih nema u dovoljnim količinama za pripravu određenog jela*/
+
+SELECT namirnice.naziv, namirnice.raspoloziva_kol,jelonamirnice.kolicina AS potrebna_kolicina,
+(jelonamirnice.kolicina-namirnice.raspoloziva_kol) AS nedostaje
+FROM jelo
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+WHERE namirnice.raspoloziva_kol < jelonamirnice.kolicina AND jelo.naziv='Pizza';
+
+
+/*popis svih jela koja se mogu pripraviti od raspoloživih namirnica*/
+SELECT DISTINCT jelo.naziv 
+FROM jelo 
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+WHERE  (jelo.naziv) <>  ALL (
+	SELECT DISTINCT jelo.naziv 
+	FROM jelo
+	JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+	JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+	WHERE jelonamirnice.kolicina > namirnice.raspoloziva_kol 
+);
