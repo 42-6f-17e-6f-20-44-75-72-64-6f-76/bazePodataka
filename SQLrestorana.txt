@@ -70,8 +70,9 @@ CREATE TABLE JeloNamirnice (
 CREATE TABLE JeloDnevniMeni (
     id_jelo             BIGINT references Jelo(id),
     id_dnevnimeni       BIGINT references DnevniMeni(id),
-    broj_porcija        INTEGER UNSIGNED NOT NULL DEFAULT 1,
-    PRIMARY KEY         (id_jelo, id_dnevnimeni)
+    broj_porcija        INTEGER NOT NULL DEFAULT 1,
+    PRIMARY KEY         (id_jelo, id_dnevnimeni),
+    CONSTRAINT POZITIVNA_VRIJEDNOST CHECK (broj_porcija>0)
 );
 
 CREATE TABLE JeloMeni (
