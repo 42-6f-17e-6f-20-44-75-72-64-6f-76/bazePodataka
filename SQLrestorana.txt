@@ -15,8 +15,11 @@ CREATE DATABASE Restoran;
 CREATE TABLE Jelo (
     id                  SERIAL PRIMARY KEY,
     naziv               CHARACTER VARYING(30) NOT NULL UNIQUE,
-    cijena              REAL NOT NULL
+    cijena              REAL NOT NULL,
+    CONSTRAINT POZITIVNA_VRIJEDNOST CHECK (cijena>0)
 );
+
+
 
 CREATE TABLE Racun (
     id                  SERIAL PRIMARY KEY,
@@ -28,13 +31,17 @@ CREATE TABLE Namirnice (
     naziv               CHARACTER VARYING(30) NOT NULL UNIQUE,
     raspoloziva_kol     REAL,
     rok_trajanja        DATE,
-    nabavna_cijena      REAL
+    nabavna_cijena      REAL,
+    CONSTRAINT POZITIVNA_VRIJEDNOST CHECK (raspoloziva_kol>0 AND nabavna_cijena>0),
+    CONSTRAINT DATUM_NAKON CHECK (rok_trajanja>now())
+
 );
 
 
 CREATE TABLE DnevniMeni (
     id                  SERIAL PRIMARY KEY,
-    datum               DATE NOT NULL UNIQUE
+    datum               DATE NOT NULL UNIQUE,
+    CONSTRAINT DATUM_NAKON CHECK (datum>now())
 );
 
 CREATE TABLE Meni (
@@ -47,7 +54,8 @@ CREATE TABLE JeloRacun (
     id_jelo             BIGINT references Jelo(id),
     id_racun            BIGINT references Racun(id),
     kolicina            REAL NOT NULL DEFAULT 1,
-    PRIMARY KEY         (id_jelo, id_racun)
+    PRIMARY KEY         (id_jelo, id_racun),
+    CONSTRAINT POZITIVNA_VRIJEDNOST CHECK (kolicina>0)
 );
 
 
@@ -55,7 +63,8 @@ CREATE TABLE JeloNamirnice (
     id_jelo             BIGINT references Jelo(id),
     id_namirnice        BIGINT references Namirnice(id),
     kolicina            REAL NOT NULL DEFAULT 1,
-    PRIMARY KEY         (id_jelo, id_namirnice)
+    PRIMARY KEY         (id_jelo, id_namirnice),
+    CONSTRAINT POZITIVNA_VRIJEDNOST CHECK (kolicina>0)
 );
 
 CREATE TABLE JeloDnevniMeni (
@@ -96,7 +105,8 @@ VALUES
 
 INSERT INTO jelo(naziv,cijena)
 VALUES 
-('Pizza', 60),
+('Mjesana Pizza', 60),
+('Margarita Pizza', 60),
 ('Kolac', 20),
 ('Peceno', 180),
 ('Palacinke', 25);
@@ -107,10 +117,17 @@ VALUES
 (1, 1, 30),
 (1, 2, 20),
 (1, 3, 30),
-(1, 8, 30),
-(1, 9, 20),
-(1, 10, 30),
-(1, 11, 80);
+(1, 4, 30),
+(1, 5, 20),
+(1, 6, 30),
+(1, 7, 80),
+
+(2, 1, 30),
+(2, 2, 20),
+(2, 3, 30),
+(2, 5, 20),
+(2, 6, 30),
+(2, 7, 80);
 
 
 INSERT INTO meni(naziv)
