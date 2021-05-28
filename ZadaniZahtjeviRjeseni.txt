@@ -15,7 +15,10 @@ JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
 WHERE namirnice.raspoloziva_kol < jelonamirnice.kolicina;
 
-• popis svih jela koja se mogu pripraviti od raspoloživih namirnica. 
+• popis svih jela koja se mogu pripraviti od raspoloživih namirnica.   
+	nadjemo sva jela koja se NE MOGU pripraviti i ispisemo ostala jela osim tih, ona se mogu pripraviti jer nisu u tom skupu
+	problem je bio sto ako ima iti jednog sastojka jelo se moze pripraviti
+
 SELECT DISTINCT jelo.naziv 
 FROM jelo 
 JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
