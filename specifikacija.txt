@@ -4,26 +4,63 @@ Zašto koristimo ID kod svega umjesto imena?
 -	Povezivanja će obavljati softver, a njemu je svejedno ID ili naziv, dok kod ručnog unosa je preglednije
 -	ID se sam generira i tako se čuva integritet primarnog ključa
 -	…
-
+Cons: korisnik može unijeti jelo/proizvod/meni s istim nazivom, ograniciti „UNIQUE“
+Ograničiti količine, cijene na pozitivne realne brojeve
 RELACIJA Jelo
     id //IDENTIFIKATOR JELA
     naziv //NAZIV JELA 
-    cijena //CIJENA KOJU PLAĆA MUŠTERIJA KAD NARUČUJE TO JELO
+    cijena //CIJENA KOJU PLAĆA MUŠTERIJA KAD NARUČUJE TO JELO – POZITIVNI REALNI BROJ
 
 RELACIJA namirnice
     id 			//IDENTIFIKATOR NAMIRNICE
     naziv 			//NAZIV NAMIRNICE
-    raspoloziva_kolicina //PREOSTALA KOLICINA U  KILOGRAMIMA ILI LITRAMA AKO SE RADI O TEKUĆINI
+    raspoloziva_kolicina //PREOSTALA KOLICINA U  KILOGRAMIMA ILI LITRAMA AKO SE RADI O TEKUĆINI  – POZITIVNI REALNI BROJ
     datum_isteka_roka_trajanja
-    nabavna_cijena//CIJENA PO KOJOJ JE KUPLJEN PROIZVOD PO KILOGRAMU ILI LITRI
+    nabavna_cijena//CIJENA PO KOJOJ JE KUPLJEN PROIZVOD PO KILOGRAMU ILI LITRI, – POZITIVNI REALNI BROJ
 
-RELACIJA meni
+RELACIJA meni //skupina par jela sa sličnim svojstvima, ne mora naručiti sva(juhe,pizze)
     naziv //NAZIV MENIJA, JEDAN MENI SE SASTOJI OD VIŠE SLIJEDOVA JELA
 
 
 RELACIJA racun
     datum //DATUM IZDAVANJA RAČUNA
 
+
+
+
+
+• izvještaj o sastojcima koji odlaze u pripravu pojedinog jela i njihovoj trenutnoj raspoloživosti. 
+SELECT namirnice.naziv, namirnice.raspoloziva_kol FROM jelo
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+WHERE jelo.naziv = 'Pizza';
+• izvještaj o sastojcima koje je bilo/će biti potrebno nabaviti unutar zadanog vremenskog perioda. 
+//traže se namirnice koje istječu u roku od tjedan dana ili čija je količina manja od neke brojke(dodati novi atribut, min kolicina namirnice, jer fiksna vrijednost nema smisla za raznolike proizvode)
+• izvještaj o svim jelima u kojima se koristi određena namirnica. 
+//samo u drugom smjeru
+• popis svih namirnica kojih nema u dovoljnim količinama za pripravu određenog jela. 
+SELECT namirnice.naziv, namirnice.raspoloziva_kol,jelonamirnice.kolicina AS potrebna_kolicina,
+(jelonamirnice.kolicina-namirnice.raspoloziva_kol) AS nedostaje
+FROM jelo
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+WHERE namirnice.raspoloziva_kol < jelonamirnice.kolicina;
+
+• popis svih jela koja se mogu pripraviti od raspoloživih namirnica. 
+SELECT DISTINCT jelo.naziv 
+FROM jelo 
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+WHERE  (jelo.naziv) <>  ALL (
+	SELECT DISTINCT jelo.naziv 
+	FROM jelo
+	JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+	JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
+	WHERE jelonamirnice.kolicina > namirnice.raspoloziva_kol 
+);
+
+• pregled svih jela pripravljenih u određenom vremenskom periodu.
+//racun … ezz
 
 
 
