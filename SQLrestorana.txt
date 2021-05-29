@@ -201,8 +201,8 @@ VALUES
 
 /*Vlasnica/vlasnik restorana salona želi imati uvid samo u pregled prometa po danima*/
 CREATE VIEW DnevniPromet AS
-SELECT SUM(jelo.cijena * jeloracun.kolicina) AS promet, date_part('day', racun.datum) AS dan
+SELECT SUM (jelo.cijena * jeloracun.kolicina) AS promet, date_part('day', racun.datum) AS dan
 FROM racun
 JOIN jeloracun ON racun.id = jeloracun.id_racun
-JOIN jelo ON jeloracun.id_racun = jelo.id
+JOIN jelo ON jeloracun.id_jelo = jelo.id
 GROUP BY date_part('day', racun.datum);
