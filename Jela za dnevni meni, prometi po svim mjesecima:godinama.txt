@@ -1,4 +1,4 @@
--> vlasnik restorana zeli dobiti prioritetna jela za dnevni meni obzirom na datum isteka roka namirnica 
+-> vlasnik restorana zeli dobiti prioritetna jela za dnevni meni obzirom na datum isteka roka namirnica u odredenom broju dana
 
 SELECT * FROM (
 SELECT DISTINCT ON(distinct_datum.prioritetna_jela) * FROM (
