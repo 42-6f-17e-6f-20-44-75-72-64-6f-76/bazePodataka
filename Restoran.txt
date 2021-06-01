@@ -235,7 +235,10 @@ WHERE namirnice.naziv = 'ulje';
 
 -> popis svih namirnica kojih nema u dovoljnim količinama za pripravu određenog jela
 
-SELECT namirnice.naziv, namirnice.raspoloziva_kol AS dostupno, jelonamirnice.kolicina AS potrebno, (jelonamirnice.kolicina - namirnice.raspoloziva_kol) AS nedostaje FROM jelo
+SELECT namirnice.naziv, namirnice.raspoloziva_kol AS dostupno, 
+jelonamirnice.kolicina AS potrebno, 
+(jelonamirnice.kolicina - namirnice.raspoloziva_kol) AS nedostaje 
+FROM jelo
 JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
 WHERE namirnice.raspoloziva_kol < jelonamirnice.kolicina AND jelo.naziv = 'Mijesana pizza';
