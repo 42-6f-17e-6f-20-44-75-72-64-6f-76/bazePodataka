@@ -14,3 +14,6 @@ FROM racun
 JOIN jeloracun ON racun.id = jeloracun.id_racun
 JOIN jelo ON jeloracun.id_jelo = jelo.id
 GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_part('year', racun.datum);
+
+-> Gost želi imati uvid u dnevni meni
+
