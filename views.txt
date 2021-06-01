@@ -22,6 +22,13 @@ SELECT jelo.naziv, jelo.cijena, jelodnevnimeni.broj_porcija
 FROM dnevnimeni
 JOIN jelodnevnimeni ON dnevnimeni.id = jelodnevnimeni.id_dnevnimeni
 JOIN jelo ON jelodnevnimeni.id_jelo = jelo.id
-WHERE dnevnimeni.datum = ('2021-11-02')::date;
+WHERE dnevnimeni.datum = ('2021-11-02')::date; /*ILI now()::date*/
 
 -> Gost želi imati uvid u meni koja jela su juhe
+
+CREATE VIEW MeniJuhe AS
+SELECT jelo.naziv, jelo.cijena
+FROM meni
+JOIN jelomeni ON meni.id = jelomeni.id_meni
+JOIN jelo ON jelomeni.id_jelo = jelo.id
+WHERE meni.naziv = ('Juhe');
