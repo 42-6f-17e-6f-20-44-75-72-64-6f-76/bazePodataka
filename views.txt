@@ -1,0 +1,16 @@
+/*
+   -------------------------------
+       Views
+   -------------------------------
+*/
+
+-> Vlasnica/vlasnik restorana želi imati uvid samo u pregled prometa po danima
+
+CREATE VIEW DnevniPromet AS
+SELECT SUM(jelo.cijena * jeloracun.kolicina) AS promet, 
+make_date(date_part('year', racun.datum)::int, date_part('month', racun.datum)::int, date_part('day', racun.datum)::int)
+AS datum
+FROM racun
+JOIN jeloracun ON racun.id = jeloracun.id_racun
+JOIN jelo ON jeloracun.id_jelo = jelo.id
+GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_part('year', racun.datum);
