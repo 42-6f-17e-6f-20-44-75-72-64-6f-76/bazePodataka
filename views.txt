@@ -17,3 +17,11 @@ GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_pa
 
 -> Gost želi imati uvid u dnevni meni
 
+CREATE VIEW NaDnevnomMeniu AS
+SELECT jelo.naziv, jelo.cijena, jelodnevnimeni.broj_porcija
+FROM dnevnimeni
+JOIN jelodnevnimeni ON dnevnimeni.id = jelodnevnimeni.id_dnevnimeni
+JOIN jelo ON jelodnevnimeni.id_jelo = jelo.id
+WHERE dnevnimeni.datum = ('2021-11-02')::date;
+
+-> Gost želi imati uvid u meni koja jela su juhe
