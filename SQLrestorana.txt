@@ -187,6 +187,7 @@ WHERE  (jelo.naziv) <>  ALL (
 
 
 /*dodaj racun pomocu samo naziva jela i kolicina*/
+BEGIN; 
 with rows as (
 INSERT INTO racun DEFAULT VALUES RETURNING id
 )
@@ -196,6 +197,7 @@ VALUES
 ((SELECT jelo.id FROM jelo WHERE jelo.naziv='Margarita Pizza'),(SELECT id FROM rows),3),
 ((SELECT jelo.id FROM jelo WHERE jelo.naziv='Peceno'),(SELECT id FROM rows),4),
 ((SELECT jelo.id FROM jelo WHERE jelo.naziv='Palacinke'),(SELECT id FROM rows),2);
+COMMIT; 
 
 /*dodaj dnevni meni pomocu samo naziva jela i broja porcija*/
 BEGIN; 
