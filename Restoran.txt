@@ -362,3 +362,49 @@ FROM racun
 JOIN jeloracun ON racun.id = jeloracun.id_racun
 JOIN jelo ON jeloracun.id_jelo = jelo.id
 GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_part('year', racun.datum);
+
+
+/*
+   ----------------------------------------------------------------------
+       Alternativni način dodavanja kreiranja računa/menia/dnevnog menia
+   ----------------------------------------------------------------------
+*/
+
+-> Konobar želi kreirati novi račun navodeći samo jela i njihove količine
+
+BEGIN; 
+with rows as (
+INSERT INTO racun DEFAULT VALUES RETURNING id
+)
+INSERT INTO jeloracun(id_jelo,id_racun,kolicina) 
+VALUES
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Goveda juha'),(SELECT id FROM rows),1),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Juha od rajcice'),(SELECT id FROM rows),3),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Mijesana pizza'),(SELECT id FROM rows),4),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Pizza margarita'),(SELECT id FROM rows),2);
+COMMIT;
+
+-> Kuhar želi kreirati novi dnevni meni navodeći samo nazive jela i broj porcija
+
+BEGIN; 
+with rows as (
+INSERT INTO dnevnimeni(datum) VALUES (now()::date) RETURNING id
+)
+INSERT INTO jelodnevnimeni(id_jelo,id_dnevnimeni,broj_porcija) 
+VALUES
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Goveda juha'),(SELECT id FROM rows),10),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Mijesana pizza'),(SELECT id FROM rows),10),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Cokoladna torta'),(SELECT id FROM rows),10);
+COMMIT; 
+
+-> Kuhar želi kreirati novi meni navodeći samo naziv menia i jela
+
+BEGIN; 
+with rows as (
+INSERT INTO meni(naziv) VALUES ('Juhe2') RETURNING id
+)
+INSERT INTO jelomeni(id_jelo,id_meni) 
+VALUES
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Juha od rajcice'),(SELECT id FROM rows)),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Goveda juha'),(SELECT id FROM rows));
+COMMIT; 
