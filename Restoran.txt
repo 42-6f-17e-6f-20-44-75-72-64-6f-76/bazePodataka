@@ -37,7 +37,7 @@ CREATE TABLE Namirnice (
 CREATE TABLE DnevniMeni (
     id                  SERIAL PRIMARY KEY,
     datum               DATE NOT NULL UNIQUE,
-    CONSTRAINT DATUM_NAKON CHECK (datum>now())
+    CONSTRAINT DATUM_NAKON CHECK (datum>=now())
 );
 
 CREATE TABLE Meni (
