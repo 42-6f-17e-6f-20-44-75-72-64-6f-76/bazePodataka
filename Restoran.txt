@@ -366,7 +366,7 @@ GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_pa
 
 /*
    ----------------------------------------------------------------------
-       Alternativni način dodavanja kreiranja računa/menia/dnevnog menia
+       Alternativni način kreiranja novog računa/menia/dnevnog menia
    ----------------------------------------------------------------------
 */
 
