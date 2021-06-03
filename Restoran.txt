@@ -333,3 +333,32 @@ JOIN jelodnevnimeni ON jelo.id = jelodnevnimeni.id_jelo
 JOIN dnevnimeni ON dnevnimeni.id = jelodnevnimeni.id_dnevnimeni
 WHERE dnevnimeni.datum = '2021-10-05'::date AND jelo.naziv = 'Mijesana pizza'
 GROUP BY namirnice.naziv;
+
+-> Gost želi imati uvid u današnji dnevni meni
+
+CREATE VIEW NaDnevnomMeniu AS
+SELECT jelo.naziv, jelo.cijena, jelodnevnimeni.broj_porcija
+FROM dnevnimeni
+JOIN jelodnevnimeni ON dnevnimeni.id = jelodnevnimeni.id_dnevnimeni
+JOIN jelo ON jelodnevnimeni.id_jelo = jelo.id
+WHERE dnevnimeni.datum = now()::date;
+
+-> Gost želi imati uvid u meni koja jela su juhe
+
+CREATE VIEW MeniJuhe AS
+SELECT jelo.naziv, jelo.cijena
+FROM meni
+JOIN jelomeni ON meni.id = jelomeni.id_meni
+JOIN jelo ON jelomeni.id_jelo = jelo.id
+WHERE meni.naziv = ('Juhe');
+
+-> Vlasnica/vlasnik restorana želi imati uvid samo u pregled prometa po danima
+
+CREATE VIEW DnevniPromet AS
+SELECT SUM(jelo.cijena * jeloracun.kolicina) AS promet, 
+make_date(date_part('year', racun.datum)::int, date_part('month', racun.datum)::int, date_part('day', racun.datum)::int)
+AS datum
+FROM racun
+JOIN jeloracun ON racun.id = jeloracun.id_racun
+JOIN jelo ON jeloracun.id_jelo = jelo.id
+GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_part('year', racun.datum);
