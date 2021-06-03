@@ -298,6 +298,30 @@ GROUP BY namirnice.naziv;
 SELECT namirnice.naziv, namirnice.rok_trajanja FROM namirnice
 WHERE namirnice.rok_trajanja < '2022-03-01'::date;
 
+-> vlasnik restorana zeli dobiti prioritetna jela za dnevni meni obzirom na datum isteka roka namirnica u odredenom broju dana
+
+SELECT * FROM (
+	SELECT DISTINCT ON(distinct_datum.prioritetna_jela) * FROM (
+		SELECT jelo.naziv AS prioritetna_jela, namirnice.naziv AS namirnica_u_pripravi, namirnice. rok_trajanja from jelo
+		JOIN JeloNamirnice ON jelo.id = JeloNamirnice.id_jelo
+		JOIN namirnice ON namirnice.id = JeloNamirnice.id_namirnice
+		WHERE namirnice.rok_trajanja BETWEEN now()::date AND now()::date+50 
+		ORDER BY (namirnice.rok_trajanja)
+	)distinct_datum
+)distinct_jela
+ORDER BY (distinct_jela.rok_trajanja);
+
+-> vlasnik restorana želi imati uvid u količinu namirnica koja će ostati raspoloživa nakon pripravljanja određenog jela s dnevnog menija u navedenom broju porcija
+
+SELECT namirnice.naziv, SUM (namirnice.raspoloziva_kol - jelonamirnice.kolicina * jelodnevnimeni.broj_porcija) AS ostaje
+FROM jelo
+JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
+JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
+JOIN jelodnevnimeni ON jelo.id = jelodnevnimeni.id_jelo
+JOIN dnevnimeni ON dnevnimeni.id = jelodnevnimeni.id_dnevnimeni
+WHERE dnevnimeni.datum = '2021-10-05'::date AND jelo.naziv = 'Mijesana pizza'
+GROUP BY namirnice.naziv;
+
 /*
    -------------------------------
        View
@@ -322,17 +346,6 @@ FROM jelo
 JOIN jelodnevnimeni ON jelo.id = jelodnevnimeni.id_jelo
 JOIN dnevnimeni ON jelodnevnimeni.id_dnevnimeni = dnevnimeni.id
 WHERE dnevnimeni.datum = '2021-10-05'::date;
-
--> vlasnik restorana želi imati uvid u količinu namirnica koja će ostati raspoloživa nakon pripravljanja određenog jela s dnevnog menija u navedenom broju porcija
-
-SELECT namirnice.naziv, SUM (namirnice.raspoloziva_kol - jelonamirnice.kolicina * jelodnevnimeni.broj_porcija) AS ostaje
-FROM jelo
-JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
-JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
-JOIN jelodnevnimeni ON jelo.id = jelodnevnimeni.id_jelo
-JOIN dnevnimeni ON dnevnimeni.id = jelodnevnimeni.id_dnevnimeni
-WHERE dnevnimeni.datum = '2021-10-05'::date AND jelo.naziv = 'Mijesana pizza'
-GROUP BY namirnice.naziv;
 
 -> Gost želi imati uvid u današnji dnevni meni
 
@@ -362,19 +375,6 @@ FROM racun
 JOIN jeloracun ON racun.id = jeloracun.id_racun
 JOIN jelo ON jeloracun.id_jelo = jelo.id
 GROUP BY date_part('day', racun.datum), date_part('month', racun.datum), date_part('year', racun.datum);
-
--> vlasnik restorana zeli dobiti prioritetna jela za dnevni meni obzirom na datum isteka roka namirnica u odredenom broju dana
-
-SELECT * FROM (
-	SELECT DISTINCT ON(distinct_datum.prioritetna_jela) * FROM (
-		SELECT jelo.naziv AS prioritetna_jela, namirnice.naziv AS namirnica_u_pripravi, namirnice. rok_trajanja from jelo
-		JOIN JeloNamirnice ON jelo.id = JeloNamirnice.id_jelo
-		JOIN namirnice ON namirnice.id = JeloNamirnice.id_namirnice
-		WHERE namirnice.rok_trajanja BETWEEN now()::date AND now()::date+50 
-		ORDER BY (namirnice.rok_trajanja)
-	)distinct_datum
-)distinct_jela
-ORDER BY (distinct_jela.rok_trajanja);
 
 /*
    ----------------------------------------------------------------------
