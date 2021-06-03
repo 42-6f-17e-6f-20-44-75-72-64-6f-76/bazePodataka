@@ -15,14 +15,13 @@ COMMIT;
 /*dodaj dnevni meni pomocu samo naziva jela i broja porcija*/
 BEGIN; 
 with rows as (
-INSERT INTO dnevnimeni(datum) VALUES ('2021-11-01'::date) RETURNING id
+INSERT INTO dnevnimeni(datum) VALUES (now()::date) RETURNING id
 )
 INSERT INTO jelodnevnimeni(id_jelo,id_dnevnimeni,broj_porcija) 
 VALUES
-((SELECT jelo.id FROM jelo WHERE jelo.naziv='Mjesana Pizza'),(SELECT id FROM rows),10),
-((SELECT jelo.id FROM jelo WHERE jelo.naziv='Margarita Pizza'),(SELECT id FROM rows),10),
-((SELECT jelo.id FROM jelo WHERE jelo.naziv='Peceno'),(SELECT id FROM rows),10),
-((SELECT jelo.id FROM jelo WHERE jelo.naziv='Palacinke'),(SELECT id FROM rows),10);
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Goveda juha'),(SELECT id FROM rows),10),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Mijesana pizza'),(SELECT id FROM rows),10),
+((SELECT jelo.id FROM jelo WHERE jelo.naziv='Cokoladna torta'),(SELECT id FROM rows),10);
 COMMIT; 
 
 /*dodaj meni pomocu samo naziva menia i jela*/
