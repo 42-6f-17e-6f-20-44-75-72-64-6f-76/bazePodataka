@@ -31,13 +31,13 @@ CREATE TABLE Namirnice (
     rok_trajanja        DATE,
     nabavna_cijena      REAL,
     CONSTRAINT POZITIVNA_VRIJEDNOST CHECK (raspoloziva_kol>=0 AND nabavna_cijena>0),
-    CONSTRAINT DATUM_NAKON CHECK (rok_trajanja>now())
+    CONSTRAINT DATUM_NAKON CHECK (rok_trajanja>now()::date)
 );
 
 CREATE TABLE DnevniMeni (
     id                  SERIAL PRIMARY KEY,
     datum               DATE NOT NULL UNIQUE,
-    CONSTRAINT DATUM_NAKON CHECK (datum>=now())
+    CONSTRAINT DATUM_NAKON CHECK (datum>=now()::date)
 );
 
 CREATE TABLE Meni (
