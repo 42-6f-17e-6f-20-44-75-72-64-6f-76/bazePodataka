@@ -218,7 +218,8 @@ WHERE jelo.naziv = 'Mijesana pizza';
 
 -> izvještaj o sastojcima koje je bilo/će biti potrebno nabaviti unutar zadanog vremenskog perioda
 
-SELECT namirnice.naziv, SUM(jelonamirnice.kolicina * jelodnevnimeni.broj_porcija) AS potrebna_kolicina FROM jelo
+SELECT namirnice.naziv, SUM(jelonamirnice.kolicina * jelodnevnimeni.broj_porcija) AS potrebna_kolicina 
+FROM jelo
 JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
 JOIN jelodnevnimeni ON jelo.id = jelodnevnimeni.id_jelo
@@ -228,7 +229,8 @@ GROUP BY namirnice.naziv;
 
 -> izvještaj o svim jelima u kojima se koristi određena namirnica
 
-SELECT jelo.naziv FROM jelo
+SELECT jelo.naziv 
+FROM jelo
 JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON namirnice.id = jelonamirnice.id_namirnice
 WHERE namirnice.naziv = 'ulje';
@@ -259,7 +261,8 @@ WHERE  (jelo.naziv) <>  ALL (
 
 -> pregled svih jela pripravljenih u određenom vremenskom periodu
 
-SELECT jelo.naziv, SUM(jeloracun.kolicina) AS broj_pripravljenih_jela FROM jelo
+SELECT jelo.naziv, SUM(jeloracun.kolicina) AS broj_pripravljenih_jela 
+FROM jelo
 JOIN jeloracun ON jelo.id = jeloracun.id_jelo
 JOIN racun ON racun.id = jeloracun.id_racun
 WHERE racun.datum >= '2021-05-25'::date
@@ -273,14 +276,16 @@ GROUP BY jelo.naziv;
 
 -> pregled ukupne zarade u određenom periodu
 
-SELECT SUM(jelo.cijena * jeloracun.kolicina) AS ukupna_zarada FROM jelo
+SELECT SUM(jelo.cijena * jeloracun.kolicina) AS ukupna_zarada 
+FROM jelo
 JOIN jeloracun ON jelo.id = jeloracun.id_jelo
 JOIN racun ON racun.id = jeloracun.id_racun
 WHERE racun.datum > '2021-05-28'::date;
 
 -> izvještaj o količini iskorištenih namirnica u određenom periodu
 
-SELECT DISTINCT namirnice.naziv, SUM(jelonamirnice.kolicina * jeloracun.kolicina) AS iskorisena_kolicina FROM jelo
+SELECT DISTINCT namirnice.naziv, SUM(jelonamirnice.kolicina * jeloracun.kolicina) AS iskorisena_kolicina 
+FROM jelo
 JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
 JOIN jeloracun ON jelo.id = jeloracun.id_jelo
@@ -312,7 +317,8 @@ GROUP BY date_part('day', racun.datum);
 -> vlasnik restorana želi imati uvid u jela koja se nalaze na dnevnom meniju odredeni dan
 
 CREATE VIEW jela_na_dnevnom_meniju AS
-SELECT jelo.naziv, jelodnevnimeni.broj_porcija AS porcije FROM jelo
+SELECT jelo.naziv, jelodnevnimeni.broj_porcija AS porcije 
+FROM jelo
 JOIN jelodnevnimeni ON jelo.id = jelodnevnimeni.id_jelo
 JOIN dnevnimeni ON jelodnevnimeni.id_dnevnimeni = dnevnimeni.id
 WHERE dnevnimeni.datum = '2021-10-05'::date;
