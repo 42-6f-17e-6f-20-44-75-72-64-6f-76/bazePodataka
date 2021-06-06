@@ -280,7 +280,7 @@ SELECT SUM(jelo.cijena * jeloracun.kolicina) AS ukupna_zarada
 FROM jelo
 JOIN jeloracun ON jelo.id = jeloracun.id_jelo
 JOIN racun ON racun.id = jeloracun.id_racun
-WHERE racun.datum > '2021-05-28'::date;
+WHERE racun.datum BETWEEN '2021-05-28'::date AND now()::date;
 
 -> izvještaj o količini iskorištenih namirnica u određenom periodu
 
@@ -290,7 +290,7 @@ JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
 JOIN jeloracun ON jelo.id = jeloracun.id_jelo
 JOIN racun ON racun.id = jeloracun.id_racun
-WHERE racun.datum > '2021-05-28'::date
+WHERE racun.datum BETWEEN '2021-05-28'::date AND now()::date
 GROUP BY namirnice.naziv;
 
 -> popis svih namirnica čiji rok trajanja ističe do određenog datuma
