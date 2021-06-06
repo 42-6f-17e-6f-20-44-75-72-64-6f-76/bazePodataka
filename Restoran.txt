@@ -284,7 +284,8 @@ WHERE racun.datum BETWEEN '2021-05-28'::date AND now()::date;
 
 -> izvještaj o količini iskorištenih namirnica u određenom periodu
 
-SELECT DISTINCT namirnice.naziv, SUM(jelonamirnice.kolicina * jeloracun.kolicina) AS iskorisena_kolicina 
+SELECT DISTINCT namirnice.naziv, 
+SUM(jelonamirnice.kolicina * jeloracun.kolicina) AS iskorisena_kolicina 
 FROM jelo
 JOIN jelonamirnice ON jelo.id = jelonamirnice.id_jelo
 JOIN namirnice ON jelonamirnice.id_namirnice = namirnice.id
